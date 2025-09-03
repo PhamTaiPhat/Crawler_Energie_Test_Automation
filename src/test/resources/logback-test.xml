@@ -1,0 +1,150 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+    <!-- Optional: show Logback status messages on console at startup -->
+    <statusListener class="ch.qos.logback.core.status.OnConsoleStatusListener"/>
+
+    <!-- ==== Properties ==== -->
+    <property name="LOG_DIR" value="${LOG_DIR:-logs}"/>
+    <property name="PATTERN_CONSOLE" value="%d{HH:mm:ss.SSS} %-5level %logger{36} - %msg%n"/>
+    <property name="PATTERN_FILE" value="%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level %logger{36} - %msg%n"/>
+
+    <!-- ==== Console (INFO+ to console) ==== -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>INFO</level>
+        </filter>
+        <encoder>
+            <pattern>${PATTERN_CONSOLE}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- === Test results file (only logs from logger 'test.results') === -->
+    <appender name="FILE_TEST_RESULTS" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/test-results.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/test-results-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>14</maxHistory>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${PATTERN_FILE}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ==== DEBUG-only file ==== -->
+    <appender name="FILE_DEBUG" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/debug.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>DEBUG</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/debug-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>14</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${PATTERN_FILE}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ==== INFO-only file ==== -->
+    <appender name="FILE_INFO" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/info.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>INFO</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/info-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>14</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${PATTERN_FILE}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ==== WARN-only file ==== -->
+    <appender name="FILE_WARN" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/warn.log</file>
+        <filter class="ch.qos.logback.classic.filter.LevelFilter">
+            <level>WARN</level>
+            <onMatch>ACCEPT</onMatch>
+            <onMismatch>DENY</onMismatch>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/warn-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>10MB</maxFileSize>
+            <maxHistory>14</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${PATTERN_FILE}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ==== ALL levels file (everything) ==== -->
+    <appender name="FILE_ALL" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>${LOG_DIR}/all.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.SizeAndTimeBasedRollingPolicy">
+            <fileNamePattern>${LOG_DIR}/all-%d{yyyy-MM-dd}.%i.log</fileNamePattern>
+            <maxFileSize>20MB</maxFileSize>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>2GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>${PATTERN_FILE}</pattern>
+        </encoder>
+    </appender>
+
+    <!-- ==== Async wrappers (optional but recommended for file IO) ==== -->
+    <appender name="ASYNC_FILE_TEST_RESULTS" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE_TEST_RESULTS"/>
+        <queueSize>8192</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <neverBlock>true</neverBlock>
+    </appender>
+
+    <appender name="ASYNC_FILE_ALL" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE_ALL"/>
+    </appender>
+    <appender name="ASYNC_FILE_DEBUG" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE_DEBUG"/>
+    </appender>
+    <appender name="ASYNC_FILE_INFO" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE_INFO"/>
+    </appender>
+    <appender name="ASYNC_FILE_WARN" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE_WARN"/>
+    </appender>
+
+    <!-- ==== Noise reduction from dependencies ==== -->
+    <logger name="org.openqa.selenium" level="ERROR"/>
+    <logger name="org.apache.http" level="ERROR"/>
+    <logger name="io.netty" level="ERROR"/>
+
+    <!-- === Named logger: ONLY writes to the test-results appender === -->
+    <logger name="test.results" level="INFO" additivity="false">
+        <appender-ref ref="ASYNC_FILE_TEST_RESULTS"/>
+        <!-- Uncomment to also mirror to console:
+        <appender-ref ref="CONSOLE"/>
+        -->
+    </logger>
+
+    <!-- ==== Root logger wiring ==== -->
+    <root level="DEBUG">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE_ALL"/>
+        <appender-ref ref="ASYNC_FILE_DEBUG"/>
+        <appender-ref ref="ASYNC_FILE_INFO"/>
+        <appender-ref ref="ASYNC_FILE_WARN"/>
+    </root>
+
+</configuration>

@@ -1,0 +1,29 @@
+version: "3.9"
+services:
+  webapp:
+    image: yourorg/webapp:latest
+    ports: ["8080:8080"]
+
+  selenium:
+    image: selenium/standalone-chrome:latest
+    shm_size: "2g"              # avoid Chrome crashes
+    ports:
+      - "4444:4444"             # WebDriver endpoint
+      - "7900:7900"             # noVNC viewer
+    environment:
+      - SE_NODE_MAX_SESSIONS=1
+      # optional password for VNC clients (not needed for noVNC)
+      # - SE_VNC_PASSWORD=secret
+
+  tests:
+    image: yourorg/tests:latest
+    depends_on:
+      - selenium
+      - webapp
+    environment:
+      - SELENIUM_URL=http://selenium:4444/wd/hub
+      - BASE_URL=http://webapp:8080
+      - HEADLESS=false          # your own flag, see below
+    command: ["mvn","-q","-Dtest=*E2E*","test"]
+    volumes:
+      - ./artifacts:/artifacts

@@ -1,0 +1,32 @@
+# Build outputs
+target/
+out/
+build/
+
+# Test/QA artifacts
+reports/
+logs/
+artifacts/
+playwright-report/
+
+# Maven wrapper (commit these files!)
+# .mvn/wrapper/maven-wrapper.jar  <-- DO NOT ignore this
+
+# IDE
+.idea/
+*.iml
+*.ipr
+*.iws
+.vscode/
+
+# OS cruft
+.DS_Store
+Thumbs.db
+
+# Node (if you ever add a frontend)
+node_modules/
+
+# Temp
+tmp/
+*.log
+hs_err_pid*.log

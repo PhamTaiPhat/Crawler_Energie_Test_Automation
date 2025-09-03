@@ -1,0 +1,20 @@
+[
+  {
+    "postalCode": "2572EP",
+    "houseNumber": "192",
+    "electricityUsage": "1000",
+    "gasUsage": "500",
+    "electricityProduction": "100",
+    "initials": "Mr.",
+    "firstName": "First",
+    "middleName": "Middle",
+    "lastName": "Last",
+    "phoneNumber": "0804536060",
+    "email": "testertesting087@gmail.com",
+    "iban": "CZ5808000000003107350143",
+    "accountHolderName": "Tai Phat Pham",
+    "birthDay": "9",
+    "birthMonth": "8",
+    "birthYear": "1950"
+  }
+]
