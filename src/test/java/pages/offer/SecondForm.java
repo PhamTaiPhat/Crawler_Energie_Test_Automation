@@ -18,11 +18,9 @@ import java.util.Map;
 import java.util.Objects;
 
 public class SecondForm extends Form {
-    Highlighter highlighter;
 
     public SecondForm(UiContext context, UserActions userActions) {
-        super(context, userActions);
-        this.highlighter = new Highlighter(context);
+        super(context);
     }
 
     // ---------------------------
@@ -37,9 +35,9 @@ public class SecondForm extends Form {
 
 
             By locator = By.xpath("//table[thead//th[normalize-space(.)='Delivery Address']]");
-            WebElement table = highlighter.prepareReadOnlyElement(locator);
+            WebElement table = userActions.prepareReadOnlyElement(locator);
 
-            WebElement addressElement = highlighter.prepareChildElement(table, By.xpath("./tbody/tr[1]/td[2]"));
+            WebElement addressElement = userActions.prepareChildElement(table, By.xpath("./tbody/tr[1]/td[2]"));
             String addressText = addressElement.getText();
 
             String[] extractedCodes = Parser.extractAddressCodes(addressText);
@@ -76,10 +74,10 @@ public class SecondForm extends Form {
             tables = tables.subList(start, Math.min(tables.size(), end + 1));
             for (WebElement table : tables) {
                 By locator = By.tagName("tbody");
-                WebElement tbody = highlighter.prepareChildElement(table, locator);
+                WebElement tbody = userActions.prepareChildElement(table, locator);
                 for (WebElement row : tbody.findElements(By.tagName("tr"))) {
-                    highlighter.highlight(row);
-                    List<WebElement> cells = highlighter.prepareChildren(row, By.tagName("td"));
+                    userActions.highlight(row);
+                    List<WebElement> cells = userActions.prepareChildren(row, By.tagName("td"));
                     if (cells.size() < 4) continue;
 
                     String key = cells.get(1).getText();
@@ -133,14 +131,14 @@ public class SecondForm extends Form {
     }
 
     private List<WebElement> getAllTables() {
-        WebElement bigTable = highlighter.prepareReadOnlyElement(By.tagName("table"));
+        WebElement bigTable = userActions.prepareReadOnlyElement(By.tagName("table"));
 
         By buttonLocator = By.tagName("button");
-        WebElement button = highlighter.prepareChildElement(bigTable, buttonLocator);
+        WebElement button = userActions.prepareChildElement(bigTable, buttonLocator);
 
         userActions.clickWebElement(button);
 
-        return highlighter.prepareChildren(bigTable, By.tagName("table"));
+        return userActions.prepareChildren(bigTable, By.tagName("table"));
     }
 
     private boolean compareElectricity(Customer customer, Map<String, BigDecimal> inputTable) {

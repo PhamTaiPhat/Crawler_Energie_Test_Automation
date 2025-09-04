@@ -17,8 +17,8 @@ import java.util.Objects;
 public class FourthForm extends Form {
     private final SecondForm secondForm;
 
-    public FourthForm(UiContext context, UserActions userActions) {
-        super(context, userActions);
+    public FourthForm(UiContext context) {
+        super(context);
         this.secondForm = new SecondForm(context, userActions);
     }
 
@@ -30,7 +30,7 @@ public class FourthForm extends Form {
     private WebElement findDescendant(WebElement root, String tag, String attribute, String section) {
         // Scope to root with .// and trim text for robustness
         By locator = By.xpath(".//" + tag + "[normalize-space(text())='" + attribute + "']");
-        List<WebElement> elements = highlighter.prepareChildren(root, locator);
+        List<WebElement> elements = userActions.prepareChildren(root, locator);
         if (VerificationConfig.CONTRACT_INFO.equals(section)) {
             return elements.get(0).findElement(By.xpath(".."));
         }
@@ -95,7 +95,7 @@ public class FourthForm extends Form {
     private boolean verifyContractInfo(Customer customer) {
         try {
             By contractLocator = By.xpath("//h2[text()='" + VerificationConfig.CONTRACT_INFO + "']");
-            WebElement h2Element = highlighter.prepareReadOnlyElement(contractLocator);
+            WebElement h2Element = userActions.prepareReadOnlyElement(contractLocator);
             WebElement parent = h2Element.findElement(By.xpath(".."));
 
             boolean result = verifyAddress(parent, customer.getPostalCode(), customer.getHouseNumber());
@@ -121,9 +121,9 @@ public class FourthForm extends Form {
     private boolean verifyContactInfo(Customer customer) {
         try {
             By contactLocator = By.xpath("//h2[text()='" + VerificationConfig.CONTACT_INFO + "']");
-            WebElement h2Element = highlighter.prepareReadOnlyElement(contactLocator);
+            WebElement h2Element = userActions.prepareReadOnlyElement(contactLocator);
 
-            WebElement parent = highlighter.prepareChildElement(h2Element, By.xpath(".."));
+            WebElement parent = userActions.prepareChildElement(h2Element, By.xpath(".."));
 
             boolean result = true;
             Map<String, String> customerMap = customer.getAttributesMap();
@@ -160,10 +160,10 @@ public class FourthForm extends Form {
         for (int attempt = 1; attempt <= 3; attempt++) {
             try {
                 By contactLocator = By.xpath("//h2[text()='" + VerificationConfig.CONTACT_INFO + "']");
-                WebElement h2Element = highlighter.prepareReadOnlyElement(contactLocator);
-                WebElement parent = highlighter.prepareChildElement(h2Element, By.xpath(".."));
+                WebElement h2Element = userActions.prepareReadOnlyElement(contactLocator);
+                WebElement parent = userActions.prepareChildElement(h2Element, By.xpath(".."));
 
-                WebElement text = highlighter.prepareChildElement(parent, By.xpath(".//*[text()='Offer created successfully']"));
+                WebElement text = userActions.prepareChildElement(parent, By.xpath(".//*[text()='Offer created successfully']"));
                 if (text.isDisplayed()) {
                     logger.info(LoggerMessages.sectionSuccess(("Confirmation message")));
                     return true;

@@ -20,16 +20,16 @@ public class Highlighter {
 
     private static final Logger logger = LoggerFactory.getLogger(Highlighter.class);
     // Constants moved from BehaviourConfig to avoid circular dependency
-    private static final String COLOR_PROCESSING = "orange";
     protected WebDriver driver;
     protected WebDriverWait wait;
+    private static final String COLOR_PROCESSING = "orange";
 
-    public Highlighter(WebDriver driver, WebDriverWait wait) {
+    protected Highlighter(WebDriver driver, WebDriverWait wait) {
         this.driver = driver;
         this.wait = wait;
     }
 
-    public Highlighter(UiContext context) {
+    protected Highlighter(UiContext context) {
         this.driver = context.driver();
         this.wait = context.waiter();
     }

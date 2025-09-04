@@ -13,20 +13,16 @@ import logger.LoggerMessages;
 
 import java.util.Random;
 
-public class UserActions {
+public class UserActions extends Highlighter{
     private static final Logger logger = LoggerFactory.getLogger(UserActions.class);
     private static final Random random = new Random();
     private static final int MAX_CLICK_RETRIES = BehaviourConfig.CLICK_MAX_RETRIES;
-    private final Highlighter highlighter;
     protected WebDriver driver;
     protected WebDriverWait wait;
 
-    public UserActions(UiContext context, Highlighter highlighter) {
-        this.driver = context.driver();
-        this.wait = context.waiter();
-        this.highlighter = highlighter;
+    public UserActions(UiContext context) {
+        super(context);
     }
-
     /**
      * Creates a delay in a range of milliseconds.
      */

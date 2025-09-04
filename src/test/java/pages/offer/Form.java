@@ -15,44 +15,44 @@ import org.slf4j.LoggerFactory;
 
 public class Form {
     protected final UserActions userActions;
-    protected final Highlighter highlighter;
     protected final Logger logger = LoggerFactory.getLogger(getClass());
-    protected WebDriver driver;
-    protected WebDriverWait wait;
+    protected UiContext uiContext;
 
-    public Form(UiContext context, UserActions userActions) {
-        this.driver = context.driver();
-        this.wait = context.waiter();
-        this.userActions = userActions;
-        this.highlighter = new Highlighter(context);
+    public Form(UiContext context) {
+        this.uiContext = context;
+        this.userActions = new  UserActions(context);
     }
 
+    private static final By ENGLISH = By.xpath("//button[text()='EN']");
+    private static final String URL_OFFER = "https://dev.crawlerenergie.nl/platform";
+    private static final By NEXT_BUTTON = By.id("next-button");
+
     protected void click(By locator) {
-        WebElement element = highlighter.prepareElementForInteraction(locator);
+        WebElement element = userActions.prepareElementForInteraction(locator);
         userActions.clickWebElement(element);
     }
 
     protected void fill(By locator, String input) {
-        WebElement element = highlighter.prepareElementForInteraction(locator);
+        WebElement element = userActions.prepareElementForInteraction(locator);
         userActions.fillWebElement(element, input);
     }
 
     protected void select(By locator, String input) {
-        WebElement element = highlighter.prepareElementForInteraction(locator);
+        WebElement element = userActions.prepareElementForInteraction(locator);
         userActions.selectWebElement(element, input);
     }
 
     protected void navigateToPlatformPage() {
-        driver.get(Locators.URL);
-        wait.until(ExpectedConditions.presenceOfElementLocated(Locators.BODY_TAG));
+        uiContext.driver().get(URL_OFFER);
+        uiContext.waiter().until(ExpectedConditions.presenceOfElementLocated(Locators.BODY_TAG));
     }
 
     protected void clickEnglishButton() {
-        click(Locators.ENGLISH);
+        click(ENGLISH);
     }
 
     protected void clickNextButton() {
-        click(Locators.NEXT_BUTTON);
+        click(NEXT_BUTTON);
     }
 
     protected void successLog() {

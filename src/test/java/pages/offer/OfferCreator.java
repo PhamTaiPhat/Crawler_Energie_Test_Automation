@@ -2,6 +2,7 @@ package pages.offer;
 
 import config.BehaviourConfig;
 import helper.UserActions;
+import logger.LoggerMessages;
 import logger.TestResultLogger;
 import model.Customer;
 import model.UiContext;
@@ -11,18 +12,17 @@ import org.slf4j.LoggerFactory;
 public class OfferCreator {
     private final UiContext context;
     private final Logger logger = LoggerFactory.getLogger(OfferCreator.class);
-    private UserActions userActions;
     private final FirstForm firstForm;
     private final SecondForm secondForm;
     private final ThirdForm thirdForm;
     private final FourthForm fourthForm;
 
-    public OfferCreator(UiContext context, UserActions userActions) {
+    public OfferCreator(UiContext context) {
         this.context = context;
-        this.firstForm = new FirstForm(context, userActions);
-        this.secondForm = new SecondForm(context, userActions);
-        this.thirdForm = new ThirdForm(context, userActions);
-        this.fourthForm = new FourthForm(context, userActions);
+        this.firstForm = new FirstForm(context);
+        this.secondForm = new SecondForm(context);
+        this.thirdForm = new ThirdForm(context);
+        this.fourthForm = new FourthForm(context);
     }
 
     private boolean fillFirstForm(Customer customer) {
@@ -67,8 +67,6 @@ public class OfferCreator {
     }
 
     public boolean fillBothForms(Customer customer) {
-        long startTime = System.currentTimeMillis();
-        String testName = "Happy Flow 1- - Fill both forms";
 
         try {
             setup();
@@ -85,26 +83,12 @@ public class OfferCreator {
             // Verify fourth form
             result = result && verifyFourthForm(customer);
             //Send offer and check
-
-            long duration = System.currentTimeMillis() - startTime;
-
-            if (result) {
-                TestResultLogger.logTestSuccess(testName);
-            } else {
-                TestResultLogger.logTestFailure(testName);
-            }
-            TestResultLogger.logTestSummary(testName,duration,result);
+            logger.info(LoggerMessages.sectionSuccess("Filling Both forms"));
             return result;
-
         } catch (Exception e) {
-            // Test crashed - logged via TestResultLogger
+            logger.debug(LoggerMessages.sectionCrash("Filling Both forms"));
+            return false;
 
-            // Log test crash
-            long duration = System.currentTimeMillis() - startTime;
-            TestResultLogger.logTestCrash(testName, "Test execution crashed", e);
-            TestResultLogger.logTestSummary(testName, duration, "💥 CRASHED");
-
-            throw new RuntimeException("[💥] [CRASHED] [Fill both forms with default customer]", e);
         }
     }
 }

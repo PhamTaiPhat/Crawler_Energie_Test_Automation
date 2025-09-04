@@ -13,50 +13,65 @@ import java.util.Locale;
 
 public class ThirdForm extends Form {
     public ThirdForm(UiContext context, UserActions userActions) {
-        super(context, userActions);
+        super(context);
     }
 
+    private static final By INITIALS = By.id("contractInfo.initials");
+    private static final By FIRST_NAME = By.id("contractInfo.firstName");
+    private static final By MIDDLE_NAME = By.id("contractInfo.middleName");
+    private static final By LAST_NAME = By.id("contractInfo.lastName");
+    private static final By EMAIL = By.id("contractInfo.email");
+    private static final By PHONE_NUMBER = By.id("contractInfo.contactNumber");
+    private static final By BIRTHDAY = By.id("contractInfo.dateOfBirth");
+
+    // Banking information
+    private static final By IBAN = By.id("iban");
+    private static final By ACCOUNT_HOLDER = By.id("accountHolderName");
+
+    // Birthday related locators
+    private static final By MONTH_SELECT = By.xpath("//select[@aria-label='Choose the Month']");
+    private static final By YEAR_SELECT = By.xpath("//select[@aria-label='Choose the Year']");
     //Fill fields
     private void fillInitials(String input) {
-        fill(Locators.INITIALS, input);
+        fill(INITIALS, input);
     }
 
     private void fillFirstName(String input) {
-        fill(Locators.FIRST_NAME, input);
+        fill(FIRST_NAME, input);
     }
 
     private void fillMiddleName(String input) {
-        fill(Locators.MIDDLE_NAME, input);
+        fill(MIDDLE_NAME, input);
     }
 
     private void fillLastName(String input) {
-        fill(Locators.LAST_NAME, input);
+        fill(LAST_NAME, input);
     }
 
     private void fillEmail(String input) {
-        fill(Locators.EMAIL, input);
+        fill(EMAIL, input);
     }
 
     private void fillPhoneNumber(String input) {
-        fill(Locators.PHONE_NUMBER, input);
+        fill(PHONE_NUMBER, input);
     }
 
     private void fillIBAN(String input) {
-        fill(Locators.IBAN, input);
+        fill(IBAN, input);
     }
 
     private void fillAccountHolderName(String input) {
-        fill(Locators.ACCOUNT_HOLDER, input);
+        fill(ACCOUNT_HOLDER, input);
     }
 
     //Select fields
     private void selectDateOfBirth(String day, String month, String year) {
-        click(Locators.BIRTHDAY);
+        click(BIRTHDAY);
 
-        select(Locators.YEAR_SELECT, year);
+        select(YEAR_SELECT, year);
 
         Month monthObject = Month.of(Integer.parseInt(month));
-        select(Locators.MONTH_SELECT, monthObject.getDisplayName(TextStyle.FULL, Locale.ENGLISH));
+        select(MONTH_SELECT, monthObject.getDisplayName(TextStyle.FULL, Locale.ENGLISH));
 
         By dayLocator = By.xpath("//button[text()='" + day + "']");
         click(dayLocator);

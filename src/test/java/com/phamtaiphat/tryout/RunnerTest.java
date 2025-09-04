@@ -5,6 +5,7 @@ import helper.Highlighter;
 import helper.JsonReader;
 import helper.UserActions;
 import logger.LogCleanup;
+import logger.TestResultLogger;
 import model.Customer;
 import model.UiContext;
 import org.junit.jupiter.api.*;
@@ -18,6 +19,7 @@ import org.openqa.selenium.remote.RemoteWebDriver;
 import org.openqa.selenium.support.ui.WebDriverWait;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import pages.Login;
 import pages.offer.OfferCreator;
 
 import java.io.IOException;
@@ -108,11 +110,9 @@ public class RunnerTest {
         } catch (Exception ignored) {}
 
         // Wire up test helpers
-        UiContext uiContext = new UiContext(driver,
-                new WebDriverWait(driver, Duration.ofSeconds(BehaviourConfig.WAITING_TIME_SECONDS)));
-        Highlighter highlighter = new Highlighter(uiContext);
-        UserActions userActions = new UserActions(uiContext, highlighter);
-        offerCreator = new OfferCreator(uiContext, userActions);
+        WebDriverWait waiter = new WebDriverWait(driver, Duration.ofSeconds(BehaviourConfig.WAITING_TIME_SECONDS));
+        UiContext uiContext = new UiContext(driver, waiter);
+        offerCreator = new OfferCreator(uiContext);
 
         // Ensure clean teardown even if tests abort
         Runtime.getRuntime().addShutdownHook(new Thread(RunnerTest::tearDown));
@@ -144,8 +144,31 @@ public class RunnerTest {
     @Test
     @DisplayName("Run automation test")
     public void runAutomationTest() {
-        JsonReader jsonReader = new JsonReader();
-        Customer customer = jsonReader.getFirstCustomer();
-        offerCreator.fillBothForms(customer);
+        long startTime = System.currentTimeMillis();
+        String testName = "Happy Flow 1- - Fill both forms";
+        try{
+            JsonReader jsonReader = new JsonReader();
+            Customer customer = jsonReader.getFirstCustomer();
+            Boolean result = offerCreator.fillBothForms(customer);
+
+            long duration = System.currentTimeMillis() - startTime;
+
+            if (result) {
+                TestResultLogger.logTestSuccess(testName);
+            } else {
+                TestResultLogger.logTestFailure(testName);
+            }
+            TestResultLogger.logTestSummary(testName,duration,result);
+            assert result;
+
+
+        } catch (RuntimeException e) {
+            // Log test crash
+            long duration = System.currentTimeMillis() - startTime;
+            TestResultLogger.logTestCrash(testName, "Test execution crashed", e);
+            TestResultLogger.logTestSummary(testName, duration, "💥 CRASHED");
+            throw new RuntimeException(e);
+        }
+
     }
 }
