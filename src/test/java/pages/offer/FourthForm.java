@@ -95,8 +95,7 @@ public class FourthForm extends Form {
     private boolean verifyContractInfo(Customer customer) {
         try {
             By contractLocator = By.xpath("//h2[text()='" + VerificationConfig.CONTRACT_INFO + "']");
-            WebElement h2Element = driver.findElement(contractLocator);
-            highlighter.highlight(h2Element);
+            WebElement h2Element = highlighter.prepareReadOnlyElement(contractLocator);
             WebElement parent = h2Element.findElement(By.xpath(".."));
 
             boolean result = verifyAddress(parent, customer.getPostalCode(), customer.getHouseNumber());

@@ -98,6 +98,7 @@ public class Highlighter {
                     return null;
                 }
             });
+            highlight(result);
             logger.info(LoggerMessages.subsectionSuccess("Prepare child"));
             return result;
         } catch (Exception e) {

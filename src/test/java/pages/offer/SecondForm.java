@@ -38,10 +38,8 @@ public class SecondForm extends Form {
 
             By locator = By.xpath("//table[thead//th[normalize-space(.)='Delivery Address']]");
             WebElement table = highlighter.prepareReadOnlyElement(locator);
-            highlighter.highlight(table);
 
             WebElement addressElement = highlighter.prepareChildElement(table, By.xpath("./tbody/tr[1]/td[2]"));
-            highlighter.highlight(addressElement);
             String addressText = addressElement.getText();
 
             String[] extractedCodes = Parser.extractAddressCodes(addressText);
@@ -79,7 +77,6 @@ public class SecondForm extends Form {
             for (WebElement table : tables) {
                 By locator = By.tagName("tbody");
                 WebElement tbody = highlighter.prepareChildElement(table, locator);
-                highlighter.highlight(table);
                 for (WebElement row : tbody.findElements(By.tagName("tr"))) {
                     highlighter.highlight(row);
                     List<WebElement> cells = highlighter.prepareChildren(row, By.tagName("td"));
